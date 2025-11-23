@@ -1,6 +1,5 @@
 title: "Yeonchaking Blog"
 description: "Android, BodyCam 개발 기록"
-theme: minimal-mistakes-jekyll
 remote_theme: "mmistakes/minimal-mistakes"
 
 plugins:
