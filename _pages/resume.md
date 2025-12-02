@@ -27,18 +27,22 @@ Email: yllh325@gmail.com
 ## 🧩 주요 프로젝트
 
 ### BodyCam 프로젝트
-- MediaMuxer 기반 영상 녹화 + 프리버퍼 구현  
+- Camera2 → H.264/H.265 인코딩 파이프라인 구성
+- MediaMuxer 기반 영상 녹화 + 사전녹화 구현  
 - BLE TeamSync 기능 설계 및 구현  
-- Camera2 → H.264/H.265 인코딩 파이프라인 구성  
 - Actions 기반 GitHub Pages 블로그 개발
 
 ---
 
 ## 🛠️ 기술 스택 (Skills)
-- **Android**: Kotlin, Java, Hilt, Jetpack  
-- **Architecture**: MVVM
+- **Language**: Kotlin, Java
+- **Android**:  Hilt, Jetpack, BLE, Battery Historian
+- **Jetpack**:  LiveData, DataBinding, Compose
+- **Architecture**: MVVM, CleanArchitecture
 - **Tooling**: Git
-- **Others**: MQTT, JSON, Retrofit, BLE, Battery Historian
+- **DI**: Hilt
+- **Data**: Room, SharedPreferences
+- **Others**: MQTT, JSON, Retrofit, Figma
 
 ---
 
