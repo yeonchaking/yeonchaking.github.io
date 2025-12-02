@@ -1,6 +1,5 @@
 ---
 layout: single
-title: "연제경 이력서"
 author_profile: true
 ---
 
@@ -39,7 +38,7 @@ Email: yllh325@gmail.com
 - **Android**: Kotlin, Java, MVVM, Hilt
 - **Media**: Camera2, MediaCodec, AudioRecord
 - **BLE**: Advertising, Scanning, GATT
-- **Net`w`ork**: MQTT, Retrofit
+- **Network**: MQTT, Retrofit
 - **Tools**: Git, GitHub Actions, Jekyll
 
 ---

@@ -7,22 +7,20 @@ permalink: /resume/
 # 연제경 (Yeon Je Gyeong)
 
 Android Developer  
-Email: your@email.com  
-GitHub: https://github.com/yeonchaking  
+Email: yllh325@gmail.com  
+[Blog: nockcha-log🍵](https://gtking.tistory.com/)
+[Github: yeonchaking](https://github.com/yeonchaking)
 
 ---
 
 ## 💼 경험 (Experience)
 
 ### Cybertel – Android Developer  
-**2024.04 ~ 현재**  
-- BodyCam 앱 개발  
-- MediaCodec 기반 영상 인코딩  
-- BLE TeamSync 기능 개발  
-- PTT 기기 호환성 작업  
-- PM86 / RP350 / Ecom EX-02 / PM85 단말 대응  
-- Scoped Storage 전환  
-- UVCCamera 적용 등
+**2024.07 ~ 현재**  
+- 경찰청 BodyCam 앱 개발  
+- 카타르 Vodafone GC App 신규 단말 최적화
+- 남동발전, 고성 그린파워 안드로이드 버전 최적화
+- MCLoc 앱 개발
 
 ---
 
@@ -37,22 +35,23 @@ GitHub: https://github.com/yeonchaking
 ---
 
 ## 🛠️ 기술 스택 (Skills)
-- **Android**: Kotlin, Java, MVVM, Hilt, Jetpack  
-- **Multimedia**: Camera2, MediaCodec, MediaMuxer  
-- **BLE**: Advertising, Scanning, GATT  
-- **Tooling**: Git, GitHub Actions, Jekyll  
-- **Others**: MQTT, JSON, Retrofit
+- **Android**: Kotlin, Java, Hilt, Jetpack  
+- **Architecture**: MVVM
+- **Tooling**: Git
+- **Others**: MQTT, JSON, Retrofit, BLE, Battery Historian
 
 ---
 
 ## 🎓 교육
-- 컴퓨터공학 전공  
-- Android 관련 교육 수료
+- 전북대학교 지구환경과학과(2014 ~ 2020)
+- 전북대학교 수학과(전과, 2021 ~ 2022)
+- 삼성 청년 소프트웨어 아카데미(SSAFY) 9기 (2023)
 
 ---
 
 ## 📜 자격증
-- 정보처리기사 (예시)
+- 정보처리기사
+- SQLD
 
 ---
 
