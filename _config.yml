@@ -9,6 +9,7 @@ remote_theme: "mmistakes/minimal-mistakes@4.24.0"
 plugins:
   - jekyll-seo-tag
   - jekyll-paginate
+  - jekyll-include-cache
 
 # 기본 옵션
 markdown: kramdown
