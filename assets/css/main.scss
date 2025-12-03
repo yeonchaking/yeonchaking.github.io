@@ -1,0 +1,11 @@
+@import "minimal-mistakes";
+
+// 본문 영역 전체 왼쪽 여백
+.page__content {
+  padding-left: 40px;
+}
+
+// 제목 왼쪽 여백
+.page__title {
+  margin-left: 20px;
+}
