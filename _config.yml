@@ -1,25 +1,36 @@
 title: "Yeonchaking Blog"
 description: "Android, BodyCam 개발 기록"
-remote_theme: "mmistakes/minimal-mistakes"
-repository: yeonchaking/yeonchaking.github.io
+repository: "yeonchaking/yeonchaking.github.io"
 
+# Minimal Mistakes (GitHub Pages 호환 모드)
+remote_theme: "mmistakes/minimal-mistakes@4.24.0"
+
+# GitHub Pages에서 허용되는 plugin만 사용
 plugins:
-  - jekyll-include-cache
   - jekyll-seo-tag
   - jekyll-paginate
 
+# 기본 옵션
 markdown: kramdown
 paginate: 5
 paginate_path: "/page:num/"
 
+# 포스트 컬렉션 설정
 collections:
   posts:
     output: true
     permalink: /:categories/:title/
 
+# 기본 레이아웃 설정
 defaults:
   - scope:
       path: ""
       type: posts
     values:
       layout: single
+
+# Minimal Mistakes 추천 설정 (선택)
+theme_settings:
+  toc: true
+  toc_label: "목차"
+  toc_icon: "list"
