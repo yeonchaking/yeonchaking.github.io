@@ -1,7 +1,6 @@
 ---
 layout: single
 title: "이력서"
-permalink: /resume/
 ---
 
 # 연제경 (Yeon Je Gyeong)
