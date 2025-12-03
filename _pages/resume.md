@@ -8,8 +8,7 @@ permalink: /resume/
 
 Android Developer  
 Email: yllh325@gmail.com  
-[Blog: nockcha-log🍵](https://gtking.tistory.com/)
-[Github: yeonchaking](https://github.com/yeonchaking)
+
 
 ---
 
