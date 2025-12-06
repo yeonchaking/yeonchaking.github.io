@@ -35,3 +35,7 @@ theme_settings:
   toc: true
   toc_label: "목차"
   toc_icon: "list"
+  
+sass:
+  sass_dir: _sass
+  style: compressed
