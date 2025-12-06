@@ -1,6 +1,7 @@
 ---
 layout: single
 title: "이력서"
+classes: wide
 ---
 
 # 연제경 (Yeon Je Gyeong)
