@@ -5,12 +5,12 @@
 
 
 body {
-  background: #f5f5f5 !important;
+  background: #e70101 !important;
 }
 
 /* 본문 박스에 흰색 배경 + 그림자 + 여백 */
 .page {
-  background: white !important;
+  background: rgb(255, 0, 0) !important;
   padding: 40px !important;
   box-shadow: 0 0 20px rgba(0,0,0,0.15);
   border-radius: 12px;
@@ -19,7 +19,7 @@ body {
 /* 제목 폰트 크기 크게 + 색상 변경 */
 .page__title {
   font-size: 40px !important;
-  color: #0077ff !important;
+  color: #ff0000 !important;
   text-decoration: underline;
 }
 
@@ -31,11 +31,11 @@ body {
 
 /* Resume 페이지인지 모르니까 전역 적용 + 확실한 시각적 효과 */
 .page__content p {
-  color: #333 !important;
+  color: #ff0000 !important;
 }
 
 /* 링크 색상 확 바꾸기 */
 a {
-  color: #ff4081 !important;
+  color: #ff0055 !important;
   font-weight: bold;
 }
