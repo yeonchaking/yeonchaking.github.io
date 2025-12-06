@@ -7,9 +7,8 @@ classes: wide
 # 연제경 (Yeon Je Gyeong)
 
 Android Developer  
-Email: yllh325@gmail.com  
 [Blog: nockcha-log🍵](https://gtking.tistory.com/)
-
+Email: yllh325@gmail.com  
 [Github: yeonchaking](https://github.com/yeonchaking)
 
 ---
