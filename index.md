@@ -9,7 +9,13 @@ classes: wide
 Android Developer  
 Email: yllh325@gmail.com  
 [Blog: nockcha-log🍵](https://gtking.tistory.com/)
+
 [Github: yeonchaking](https://github.com/yeonchaking)
+
+---
+
+## 🧑‍💻 자기소개 (Introduce)
+안녕하세요. 영상 처리와 BLE 통신 기반의 안드로이드 앱 개발을 전문으로 하고 있는 Android Developer 연제경입니다. BodyCam 프로젝트를 중심으로 실시간 녹화, 인코딩, BLE 싱크 등 하드웨어 깊이 연동된 기능들을 개발하고 있습니다.
 
 ---
 
@@ -26,11 +32,23 @@ Email: yllh325@gmail.com
 
 ## 🧩 주요 프로젝트
 
-### BodyCam 프로젝트
+### 경찰청 BodyCam
 - Camera2 → H.264/H.265 인코딩 파이프라인 구성
 - MediaMuxer 기반 영상 녹화 + 사전녹화 구현  
 - BLE TeamSync 기능 설계 및 구현  
 - Actions 기반 GitHub Pages 블로그 개발
+
+### 남동발전, 고성 그린파워 신규 단말 AOS Version 최적화
+- Camera2 → H.264/H.265 인코딩 파이프라인 구성
+- MediaMuxer 기반 영상 녹화 + 사전녹화 구현  
+
+### MCLoc 클라이언트 구현
+- Camera2 → H.264/H.265 인코딩 파이프라인 구성
+- MediaMuxer 기반 영상 녹화 + 사전녹화 구현  
+
+### Qatar Vodafone GC APP 신규 단말 UI 최적화
+- Camera2 → H.264/H.265 인코딩 파이프라인 구성
+- MediaMuxer 기반 영상 녹화 + 사전녹화 구현  
 
 ---
 
@@ -56,8 +74,3 @@ Email: yllh325@gmail.com
 ## 📜 자격증
 - 정보처리기사
 - SQLD
-
----
-
-## 🧑‍💻 자기소개 (Introduce)
-안녕하세요. 영상 처리와 BLE 통신 기반의 안드로이드 앱 개발을 전문으로 하고 있는 Android Developer 연제경입니다. BodyCam 프로젝트를 중심으로 실시간 녹화, 인코딩, BLE 싱크 등 하드웨어 깊이 연동된 기능들을 개발하고 있습니다.
