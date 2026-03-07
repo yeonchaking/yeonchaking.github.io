@@ -1,4 +1,4 @@
-﻿---
+---
 layout: single
 title: "이직 포트폴리오"
 classes: wide
