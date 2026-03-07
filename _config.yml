@@ -1,45 +1,60 @@
 title: "Yeonchaking Blog"
-description: "Android, BodyCam 개발 기록"
+description: "Android 개발 기록과 이직 포트폴리오"
+url: "https://yeonchaking.github.io"
 repository: "yeonchaking/yeonchaking.github.io"
-
+locale: "ko-KR"
+timezone: "Asia/Seoul"
 
 include:
   - _pages
 
-
-# Minimal Mistakes (GitHub Pages 호환 모드)
 remote_theme: "mmistakes/minimal-mistakes@4.24.0"
 
-# GitHub Pages에서 허용되는 plugin만 사용
 plugins:
   - jekyll-seo-tag
   - jekyll-paginate
   - jekyll-include-cache
 
-# 기본 옵션
 markdown: kramdown
 paginate: 5
 paginate_path: "/page:num/"
 
-# 포스트 컬렉션 설정
 collections:
   posts:
     output: true
     permalink: /:categories/:title/
 
-# 기본 레이아웃 설정
 defaults:
   - scope:
       path: ""
       type: posts
     values:
       layout: single
+      author_profile: false
+  - scope:
+      path: "_pages"
+      type: pages
+    values:
+      layout: single
+      author_profile: false
 
-# Minimal Mistakes 추천 설정 (선택)
-theme_settings:
-  toc: true
-  toc_label: "목차"
-  toc_icon: "list"
+author:
+  name: "Yeon Je Gyeong"
+  bio: "Android Developer"
+  links:
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/yeonchaking"
+    - label: "Blog"
+      icon: "fas fa-fw fa-link"
+      url: "https://gtking.tistory.com/"
+
+social:
+  type: "Person"
+  name: "Yeon Je Gyeong"
+  links:
+    - "https://github.com/yeonchaking"
+    - "https://gtking.tistory.com/"
 
 sass:
   sass_dir: _sass
