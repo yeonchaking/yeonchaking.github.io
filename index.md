@@ -5,8 +5,7 @@ author_profile: true
 ---
 
 ## 소개
-영상 처리와 BLE 통신 기반 Android 앱 개발을 중심으로 일하고 있습니다.
-업무에서는 BodyCam 프로젝트를 포함해 실시간 녹화, 인코딩, 통신 연동 기능을 구현했습니다.
+Android 앱 개발자로서 기능 구현부터 아키텍처 설계까지 전반을 다루고 있습니다. 현재는 실시간 영상 처리와 하드웨어 연동 도메인에서 일하고 있습니다.
 
 ## Experience
 ### Cybertel | Android Developer
@@ -49,8 +48,6 @@ author_profile: true
 - SQLD
 
 ## Contact
-
-함께 일하고 싶으시다면 언제든 연락 주세요.
 
 - Email: [yllh325@gmail.com](mailto:yllh325@gmail.com)
 - GitHub: [yeonchaking](https://github.com/yeonchaking)
