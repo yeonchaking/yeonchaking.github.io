@@ -29,16 +29,29 @@ author_profile: true
 - Android 앱 기능 개발 및 유지보수
 
 ## Skills
-- Language: Kotlin, Java
-- Android: Jetpack, Hilt, BLE
-- Architecture: MVVM, Clean Architecture
-- Data/Network: Room, SharedPreferences, Retrofit, JSON
-- Tools: Git, Figma
 
-## Education
+| 분류 | 기술 |
+|------|------|
+| Language | Kotlin, Java |
+| Android | Jetpack, Hilt, Camera2, BLE, MediaMuxer |
+| Architecture | MVVM, Clean Architecture |
+| Data / Network | Room, SharedPreferences, Retrofit, JSON |
+| Tools | Git, Figma |
+
+## Education & Certificate
+
+**학력**
 - 전북대학교 (2014 ~ 2020)
-- SSAFY 9기 (2023)
+- SSAFY 9기 (2023.01 ~ 2023.12)
 
-## Certificate
+**자격증**
 - 정보처리기사
 - SQLD
+
+## Contact
+
+함께 일하고 싶으시다면 언제든 연락 주세요.
+
+- Email: [yllh325@gmail.com](mailto:yllh325@gmail.com)
+- GitHub: [yeonchaking](https://github.com/yeonchaking)
+- Blog: [nockcha-log](https://gtking.tistory.com/)
