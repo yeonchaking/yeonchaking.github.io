@@ -1,16 +1,9 @@
 ---
 layout: single
-title: "이직 포트폴리오"
+title: "연제경 — Android Developer"
 classes: wide
+author_profile: true
 ---
-
-# 연제경 (Yeon Je Gyeong)
-
-Android Developer
-
-- Email: yllh325@gmail.com
-- GitHub: [yeonchaking](https://github.com/yeonchaking)
-- Blog: [nockcha-log](https://gtking.tistory.com/)
 
 ## 소개
 영상 처리와 BLE 통신 기반 Android 앱 개발을 중심으로 일하고 있습니다.

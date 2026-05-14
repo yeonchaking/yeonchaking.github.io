@@ -30,18 +30,22 @@ defaults:
       type: posts
     values:
       layout: single
-      author_profile: false
+      author_profile: true
   - scope:
       path: "_pages"
       type: pages
     values:
       layout: single
-      author_profile: false
+      author_profile: true
 
 author:
   name: "Yeon Je Gyeong"
   bio: "Android Developer"
+  avatar: "/assets/images/bio-photo.jpg"
   links:
+    - label: "Email"
+      icon: "fas fa-fw fa-envelope"
+      url: "mailto:yllh325@gmail.com"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/yeonchaking"
