@@ -25,6 +25,26 @@
 
 ---
 
+## 2026-05-14 | 구조적 개선 세션
+
+**목표**: 사이트에 보이는 모든 구조적 문제 파악 및 수정
+
+**결과**:
+- `_config.yml`: jekyll-remote-theme 플러그인 추가(테마 미적용 근본 원인 수정), avatar/author_profile/이메일 링크 추가, Follow 버튼 제거(repository 항목 삭제)
+- `index.md`: 제목 정리(front matter title + 본문 h1 중복 제거), classes:wide 제거(사이드바 활성화), Skills 테이블 형식으로 재구성(Camera2/MediaMuxer 추가), Education+Certificate 섹션 통합, Contact 섹션 추가, 소개 문구 수정
+- `_data/navigation.yml`: Experience/Projects/Skills 앵커 링크 추가
+- `Gemfile`: jekyll-remote-theme 추가
+
+**결정사항**:
+- 소개 문구는 도메인 한정(영상처리+BLE)이 아닌 넓은 방향으로 — "기능 구현부터 아키텍처 설계까지 전반"
+- Skills는 테이블 형식 유지 — 다음 템플릿 작업 때 뱃지/태그 UI로 교체하기 좋은 구조
+- 세션 플랜 확정: 구조 → 내용 → 템플릿 순서로 진행
+
+**미완료 / 다음 TODO**:
+- Experience에 수치/성과 추가
+- Projects "문제→해결→결과" 형식으로 재작성
+- 소개 문구 추가 다듬기
+
 ## 2026-05-14 | 세션 운영 가이드라인 및 CLAUDE.md 정비
 
 **목표**: AI 세션 운영 가이드라인을 수립하고 CLAUDE.md와 SESSION_LOG를 구축한다
