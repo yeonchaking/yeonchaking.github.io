@@ -1,7 +1,6 @@
 ---
 layout: single
 title: "연제경 — Android Developer"
-classes: wide
 author_profile: true
 ---
 
