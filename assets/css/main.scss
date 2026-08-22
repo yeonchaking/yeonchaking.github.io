@@ -286,6 +286,15 @@ a:focus-visible {
   white-space: nowrap;
 }
 
+.project-link {
+  margin-left: 7px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
 ul { padding-left: 1.2em; }
 li + li { margin-top: 5px; }
 li::marker { color: var(--accent); }
