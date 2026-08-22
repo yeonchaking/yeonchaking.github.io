@@ -1,5 +1,5 @@
-title: "Yeonchaking Blog"
-description: "Android portfolio and career transition site"
+title: "연제경 | Android Developer"
+description: "공공·교통 현장의 Android 앱을 개발하는 연제경의 포트폴리오"
 url: "https://yeonchaking.github.io"
 locale: "ko-KR"
 timezone: "Asia/Seoul"
@@ -39,7 +39,7 @@ defaults:
       author_profile: true
 
 author:
-  name: "Yeon Je Gyeong"
+  name: "연제경"
   bio: "Android Developer"
   avatar: "/assets/images/bio-photo.jpg"
   links:
@@ -51,14 +51,14 @@ author:
       url: "https://github.com/yeonchaking"
     - label: "Blog"
       icon: "fas fa-fw fa-link"
-      url: "https://gtking.tistory.com/"
+      url: "https://nockcha-log.tistory.com/"
 
 social:
   type: "Person"
-  name: "Yeon Je Gyeong"
+  name: "연제경"
   links:
     - "https://github.com/yeonchaking"
-    - "https://gtking.tistory.com/"
+    - "https://nockcha-log.tistory.com/"
 
 sass:
   sass_dir: _sass

@@ -1,1058 +1,207 @@
 <!doctype html>
-<html lang="ko" data-theme="dark" data-accent="teal">
+<html lang="ko">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>연제경 — Android Developer</title>
-<meta name="description" content="Android 개발자 연제경의 포트폴리오 — 실시간 영상 처리, 하드웨어 연동(BLE, Camera2)." />
-
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-
-<style>
-/* ─────────────────────────────────────────────────────────────
-   TOKENS
-   ───────────────────────────────────────────────────────────── */
-:root {
-  --font-sans: 'Pretendard Variable', Pretendard, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-
-  --maxw: 1200px;
-  --pad-x: clamp(24px, 5vw, 48px);
-  --pad-y: clamp(48px, 8vw, 96px);
-  --gap: 24px;
-
-  --r-sm: 6px;
-  --r-md: 10px;
-  --r-lg: 16px;
-
-  --ease: cubic-bezier(.2,.7,.2,1);
-}
-
-/* Dark (default) */
-html[data-theme="dark"] {
-  --bg: #0b0f17;
-  --bg-elev: #11161f;
-  --bg-hover: rgba(148, 163, 184, 0.06);
-  --text: #e2e8f0;
-  --text-strong: #f1f5f9;
-  --text-mut: #94a3b8;
-  --text-dim: #64748b;
-  --border: rgba(148, 163, 184, 0.12);
-  --border-strong: rgba(148, 163, 184, 0.22);
-  --selection: rgba(94, 234, 212, 0.20);
-  --shadow: 0 10px 30px -10px rgba(0,0,0,.55);
-}
-
-/* Light */
-html[data-theme="light"] {
-  --bg: #fafaf7;
-  --bg-elev: #ffffff;
-  --bg-hover: rgba(15, 23, 42, 0.04);
-  --text: #1f2937;
-  --text-strong: #0f172a;
-  --text-mut: #4b5563;
-  --text-dim: #6b7280;
-  --border: rgba(15, 23, 42, 0.10);
-  --border-strong: rgba(15, 23, 42, 0.16);
-  --selection: rgba(15, 118, 110, 0.18);
-  --shadow: 0 10px 30px -12px rgba(15, 23, 42, .18);
-}
-
-/* Accent palettes */
-html[data-accent="teal"][data-theme="dark"]   { --accent: #5eead4; --accent-mut: rgba(94, 234, 212, .12); }
-html[data-accent="teal"][data-theme="light"]  { --accent: #0f766e; --accent-mut: rgba(15, 118, 110, .10); }
-html[data-accent="blue"][data-theme="dark"]   { --accent: #93c5fd; --accent-mut: rgba(147, 197, 253, .14); }
-html[data-accent="blue"][data-theme="light"]  { --accent: #1d4ed8; --accent-mut: rgba(29, 78, 216, .10); }
-html[data-accent="amber"][data-theme="dark"]  { --accent: #fbbf24; --accent-mut: rgba(251, 191, 36, .14); }
-html[data-accent="amber"][data-theme="light"] { --accent: #b45309; --accent-mut: rgba(180, 83, 9, .10); }
-html[data-accent="violet"][data-theme="dark"] { --accent: #c4b5fd; --accent-mut: rgba(196, 181, 253, .14); }
-html[data-accent="violet"][data-theme="light"]{ --accent: #6d28d9; --accent-mut: rgba(109, 40, 217, .10); }
-
-/* ─────────────────────────────────────────────────────────────
-   BASE
-   ───────────────────────────────────────────────────────────── */
-* { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: var(--font-sans);
-  font-size: 16px;
-  line-height: 1.6;
-  color: var(--text);
-  background: var(--bg);
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  letter-spacing: -0.005em;
-  transition: background-color .3s var(--ease), color .3s var(--ease);
-}
-::selection { background: var(--selection); color: var(--text-strong); }
-
-a { color: inherit; text-decoration: none; }
-button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
-
-/* Subtle radial spotlight following pointer (very low intensity) */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background: radial-gradient(
-    600px circle at var(--mx, 50%) var(--my, 0%),
-    var(--accent-mut),
-    transparent 60%
-  );
-  opacity: .55;
-  transition: opacity .4s var(--ease);
-}
-html[data-theme="light"] body::before { opacity: .8; }
-
-/* ─────────────────────────────────────────────────────────────
-   LAYOUT
-   ───────────────────────────────────────────────────────────── */
-.wrap {
-  position: relative;
-  z-index: 1;
-  max-width: var(--maxw);
-  margin: 0 auto;
-  padding: 0 var(--pad-x);
-}
-
-.layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 0;
-  min-height: 100vh;
-}
-@media (min-width: 1024px) {
-  .layout {
-    grid-template-columns: minmax(360px, 5fr) minmax(0, 7fr);
-    gap: clamp(40px, 6vw, 96px);
-  }
-}
-
-/* ─────────────────────────────────────────────────────────────
-   HERO (left side, sticky on desktop)
-   ───────────────────────────────────────────────────────────── */
-.hero {
-  padding: var(--pad-y) 0;
-  display: flex;
-  flex-direction: column;
-}
-@media (min-width: 1024px) {
-  .hero {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    max-height: 100vh;
-    padding: clamp(64px, 10vh, 100px) 0;
-    justify-content: space-between;
-  }
-}
-
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--text-mut);
-  letter-spacing: 0.04em;
-  margin-bottom: 18px;
-}
-.eyebrow .dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 0 4px var(--accent-mut);
-  animation: pulse 2.4s var(--ease) infinite;
-}
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: .35; }
-}
-
-.h-name {
-  font-size: clamp(40px, 6vw, 56px);
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.025em;
-  color: var(--text-strong);
-  margin: 0;
-}
-.h-name .ko { display: block; }
-.h-name .en {
-  display: block;
-  font-size: 0.42em;
-  font-weight: 500;
-  color: var(--text-mut);
-  letter-spacing: 0.02em;
-  margin-top: 10px;
-}
-.h-role {
-  font-size: clamp(18px, 1.8vw, 20px);
-  font-weight: 600;
-  color: var(--text-strong);
-  margin: 22px 0 0;
-}
-.h-tagline {
-  font-size: 15.5px;
-  color: var(--text-mut);
-  line-height: 1.65;
-  max-width: 36ch;
-  margin: 14px 0 0;
-  text-wrap: pretty;
-}
-
-/* Nav */
-.nav {
-  margin-top: clamp(40px, 6vh, 64px);
-  display: none;
-}
-@media (min-width: 1024px) {
-  .nav { display: block; }
-}
-.nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
-.nav a {
-  display: inline-flex;
-  align-items: center;
-  gap: 14px;
-  padding: 10px 0;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  transition: color .2s var(--ease);
-}
-.nav a .line {
-  display: inline-block;
-  width: 32px;
-  height: 1px;
-  background: var(--text-dim);
-  transition: width .25s var(--ease), background-color .25s var(--ease);
-}
-.nav a:hover, .nav a:focus-visible { color: var(--text-strong); }
-.nav a:hover .line, .nav a:focus-visible .line { width: 56px; background: var(--text-strong); }
-.nav a.is-active { color: var(--text-strong); }
-.nav a.is-active .line { width: 64px; background: var(--accent); }
-
-/* Socials */
-.socials {
-  margin-top: clamp(40px, 6vh, 56px);
-  display: flex;
-  align-items: center;
-  gap: 18px;
-}
-.socials a {
-  width: 22px; height: 22px;
-  display: inline-flex; align-items: center; justify-content: center;
-  color: var(--text-mut);
-  transition: color .2s var(--ease), transform .2s var(--ease);
-}
-.socials a:hover { color: var(--text-strong); transform: translateY(-2px); }
-.socials a svg { width: 22px; height: 22px; }
-
-/* Theme toggle (top-right of viewport) */
-.controls {
-  position: fixed;
-  top: 18px; right: 18px;
-  display: flex; gap: 6px;
-  z-index: 50;
-}
-.iconbtn {
-  width: 38px; height: 38px;
-  display: inline-flex; align-items: center; justify-content: center;
-  color: var(--text-mut);
-  background: var(--bg-elev);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  transition: color .2s var(--ease), border-color .2s var(--ease), background-color .2s var(--ease);
-  backdrop-filter: blur(8px);
-}
-.iconbtn:hover { color: var(--text-strong); border-color: var(--border-strong); }
-.iconbtn svg { width: 16px; height: 16px; }
-.iconbtn .sun { display: none; }
-html[data-theme="light"] .iconbtn .sun { display: block; }
-html[data-theme="light"] .iconbtn .moon { display: none; }
-
-/* ─────────────────────────────────────────────────────────────
-   MAIN CONTENT (right side)
-   ───────────────────────────────────────────────────────────── */
-main {
-  padding: clamp(48px, 10vh, 100px) 0 var(--pad-y);
-}
-@media (min-width: 1024px) {
-  main { padding: clamp(96px, 12vh, 120px) 0 var(--pad-y); }
-}
-
-section { scroll-margin-top: 80px; }
-section + section { margin-top: clamp(64px, 10vh, 96px); }
-
-/* Sticky section header on mobile only */
-.s-head {
-  display: none;
-  position: sticky; top: 0;
-  z-index: 10;
-  margin: 0 calc(var(--pad-x) * -1);
-  padding: 14px var(--pad-x);
-  background: color-mix(in oklab, var(--bg) 90%, transparent);
-  backdrop-filter: blur(12px);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--text-mut);
-}
-@media (max-width: 1023px) { .s-head { display: block; } }
-
-/* Section title is screen-reader-only — visual label comes from .s-head (mobile)
-   or the left nav (desktop). Avoids the duplicate header on mobile. */
-.s-title {
-  position: absolute;
-  width: 1px; height: 1px;
-  padding: 0; margin: -1px;
-  overflow: hidden; clip: rect(0,0,0,0);
-  white-space: nowrap; border: 0;
-}
-
-.lede {
-  font-size: 16.5px;
-  color: var(--text-mut);
-  line-height: 1.75;
-}
-.lede p + p { margin-top: 14px; }
-.lede strong { color: var(--text-strong); font-weight: 600; }
-.lede a {
-  color: var(--text-strong);
-  border-bottom: 1px solid var(--accent);
-  padding-bottom: 1px;
-  transition: color .2s var(--ease);
-}
-.lede a:hover { color: var(--accent); }
-
-/* ─────────────────────────────────────────────────────────────
-   EXPERIENCE & PROJECT CARDS
-   ───────────────────────────────────────────────────────────── */
-.entries { display: flex; flex-direction: column; gap: 8px; }
-
-.entry {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px;
-  padding: 20px;
-  margin: 0 -20px;
-  border-radius: var(--r-md);
-  transition: background-color .25s var(--ease), box-shadow .25s var(--ease), transform .25s var(--ease);
-  cursor: default;
-}
-@media (min-width: 720px) {
-  .entry { grid-template-columns: 130px 1fr; gap: 24px; padding: 22px; }
-}
-.entry::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: var(--r-md);
-  border: 1px solid transparent;
-  transition: border-color .25s var(--ease), background-color .25s var(--ease);
-  pointer-events: none;
-}
-.entry:hover { transform: translateY(-1px); }
-.entry:hover::before {
-  border-color: var(--border);
-  background: var(--bg-hover);
-}
-.entry:hover .e-title { color: var(--accent); }
-.entry:hover .e-arrow { transform: translate(3px, -3px); }
-
-.e-period {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  color: var(--text-mut);
-  padding-top: 2px;
-  white-space: nowrap;
-}
-
-.e-body { min-width: 0; position: relative; }
-.e-title {
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--text-strong);
-  margin: 0;
-  letter-spacing: -0.01em;
-  display: block;
-  transition: color .2s var(--ease);
-}
-.e-title .e-arrow { margin-left: 4px; }
-.e-org {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-mut);
-  margin: 0;
-}
-.e-org .sep { color: var(--text-dim); margin: 0 8px; }
-.e-arrow {
-  display: inline-block;
-  transition: transform .2s var(--ease);
-  color: var(--text-mut);
-  margin-left: 2px;
-}
-.e-desc {
-  font-size: 14.5px;
-  color: var(--text-mut);
-  line-height: 1.7;
-  margin: 10px 0 0;
-}
-.e-bullets {
-  list-style: none;
-  padding: 0;
-  margin: 12px 0 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.e-bullets li {
-  position: relative;
-  padding-left: 18px;
-  font-size: 14.5px;
-  color: var(--text-mut);
-  line-height: 1.65;
-}
-.e-bullets li::before {
-  content: "";
-  position: absolute;
-  left: 0; top: 0.7em;
-  width: 8px; height: 1px;
-  background: var(--accent);
-}
-
-.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
-.tag {
-  display: inline-block;
-  font-family: var(--font-mono);
-  font-size: 11.5px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: var(--accent-mut);
-  color: var(--accent);
-  border: 1px solid transparent;
-}
-html[data-theme="light"] .tag { border-color: color-mix(in oklab, var(--accent) 30%, transparent); }
-
-/* PSR (Problem / Solution / Result) for projects */
-.psr {
-  margin-top: 14px;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
-}
-@media (min-width: 720px) {
-  .psr { grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-}
-.psr-cell {
-  position: relative;
-  padding: 10px 12px 11px;
-  border-radius: var(--r-sm);
-  border: 1px solid var(--border);
-  background: color-mix(in oklab, var(--bg-elev) 90%, transparent);
-}
-.psr-cell .lbl {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin-bottom: 4px;
-}
-.psr-cell .lbl::before {
-  content: "";
-  display: inline-block; vertical-align: middle;
-  width: 6px; height: 6px; border-radius: 1px;
-  background: var(--accent);
-  margin-right: 8px;
-  opacity: .9;
-}
-.psr-cell p { margin: 0; font-size: 13.5px; color: var(--text); line-height: 1.55; }
-
-/* ─────────────────────────────────────────────────────────────
-   SKILLS
-   ───────────────────────────────────────────────────────────── */
-.skills {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 18px;
-}
-@media (min-width: 720px) {
-  .skills { grid-template-columns: 1fr 1fr; gap: 22px 32px; }
-}
-.skill-cat {
-  padding: 18px 20px;
-  border: 1px solid var(--border);
-  border-radius: var(--r-md);
-  background: color-mix(in oklab, var(--bg-elev) 90%, transparent);
-  transition: border-color .2s var(--ease);
-}
-.skill-cat:hover { border-color: var(--border-strong); }
-.skill-cat .cat-lbl {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-mut);
-  margin-bottom: 12px;
-}
-.skill-cat .cat-lbl::before {
-  content: "";
-  display: inline-block; vertical-align: middle;
-  width: 14px; height: 1px;
-  background: var(--accent);
-  margin-right: 10px;
-}
-.skill-list { display: flex; flex-wrap: wrap; gap: 6px; }
-.skill-list .tag { background: transparent; border: 1px solid var(--border-strong); color: var(--text); }
-.skill-list .tag:hover { background: var(--accent-mut); color: var(--accent); border-color: transparent; }
-
-/* ─────────────────────────────────────────────────────────────
-   EDUCATION (small inline list)
-   ───────────────────────────────────────────────────────────── */
-.edu { display: flex; flex-direction: column; gap: 4px; }
-.edu-item {
-  display: flex; align-items: baseline; justify-content: space-between;
-  gap: 12px; padding: 10px 0;
-  border-bottom: 1px dashed var(--border);
-}
-.edu-item:last-child { border-bottom: 0; }
-.edu-item .name { font-size: 14.5px; color: var(--text-strong); font-weight: 500; }
-.edu-item .meta { font-family: var(--font-mono); font-size: 12px; color: var(--text-mut); white-space: nowrap; }
-
-/* ─────────────────────────────────────────────────────────────
-   CONTACT / FOOTER
-   ───────────────────────────────────────────────────────────── */
-.contact-card {
-  margin-top: 8px;
-  padding: 22px;
-  border: 1px solid var(--border);
-  border-radius: var(--r-md);
-  background: color-mix(in oklab, var(--bg-elev) 90%, transparent);
-  display: grid;
-  gap: 14px;
-}
-@media (min-width: 720px) {
-  .contact-card { grid-template-columns: 1fr auto; align-items: center; }
-}
-.contact-card p { margin: 0; color: var(--text-mut); }
-.contact-card .big {
-  font-family: var(--font-mono);
-  font-size: 17px;
-  color: var(--text-strong);
-  font-weight: 500;
-}
-.btn {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 11px 18px;
-  border-radius: 999px;
-  background: var(--accent);
-  color: var(--bg);
-  font-weight: 600;
-  font-size: 14px;
-  transition: transform .2s var(--ease), box-shadow .2s var(--ease), filter .2s var(--ease);
-  white-space: nowrap;
-}
-html[data-theme="light"] .btn { color: #fff; }
-.btn:hover { transform: translateY(-1px); filter: brightness(1.08); box-shadow: 0 8px 24px -8px var(--accent); }
-.btn svg { width: 14px; height: 14px; }
-
-footer {
-  margin-top: clamp(64px, 10vh, 96px);
-  padding-top: 20px;
-  border-top: 1px solid var(--border);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--text-dim);
-  line-height: 1.7;
-}
-footer a { color: var(--text-mut); transition: color .2s var(--ease); }
-footer a:hover { color: var(--accent); }
-
-/* ─────────────────────────────────────────────────────────────
-   TWEAKS PANEL (vanilla)
-   ───────────────────────────────────────────────────────────── */
-.twk {
-  position: fixed; right: 18px; bottom: 18px;
-  width: 256px;
-  z-index: 60;
-  background: var(--bg-elev);
-  border: 1px solid var(--border-strong);
-  border-radius: 12px;
-  box-shadow: var(--shadow);
-  font-size: 12px;
-  color: var(--text);
-  display: none;
-}
-.twk[data-open="true"] { display: block; }
-.twk-hd { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid var(--border); }
-.twk-hd b { font-size: 12.5px; font-weight: 600; letter-spacing: 0.02em; color: var(--text-strong); }
-.twk-x { width: 22px; height: 22px; border-radius: 6px; color: var(--text-mut); }
-.twk-x:hover { background: var(--bg-hover); color: var(--text-strong); }
-.twk-body { padding: 14px; display: flex; flex-direction: column; gap: 16px; }
-.twk-row { display: flex; flex-direction: column; gap: 8px; }
-.twk-lbl { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-mut); }
-.twk-swatches { display: flex; gap: 8px; }
-.twk-sw {
-  width: 28px; height: 28px; border-radius: 999px;
-  border: 2px solid transparent;
-  cursor: pointer;
-  transition: transform .15s var(--ease);
-}
-.twk-sw:hover { transform: scale(1.08); }
-.twk-sw[aria-checked="true"] { border-color: var(--text-strong); }
-.twk-seg { display: flex; background: var(--bg-hover); border-radius: 8px; padding: 3px; gap: 2px; }
-.twk-seg button {
-  flex: 1; padding: 6px 8px; border-radius: 6px;
-  font-size: 11.5px; color: var(--text-mut);
-  transition: color .15s var(--ease), background-color .15s var(--ease);
-}
-.twk-seg button[aria-pressed="true"] { background: var(--bg-elev); color: var(--text-strong); box-shadow: 0 1px 2px rgba(0,0,0,.1); }
-
-/* ─────────────────────────────────────────────────────────────
-   PRINT
-   ───────────────────────────────────────────────────────────── */
-@media print {
-  .controls, .twk, .nav, .socials, body::before { display: none !important; }
-  body { background: #fff; color: #111; }
-  .layout { grid-template-columns: 1fr; }
-  .hero { position: static; height: auto; }
-  section { break-inside: avoid; }
-}
-
-/* ─────────────────────────────────────────────────────────────
-   ENTRY ANIMATION
-   ───────────────────────────────────────────────────────────── */
-.reveal { opacity: 0; transform: translateY(8px); transition: opacity .6s var(--ease), transform .6s var(--ease); }
-.reveal.is-in { opacity: 1; transform: none; }
-@media (prefers-reduced-motion: reduce) {
-  .reveal, .reveal.is-in { opacity: 1; transform: none; transition: none; }
-  body::before { display: none; }
-  .eyebrow .dot { animation: none; }
-}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>연제경 | Android Developer</title>
+  <meta name="description" content="공공·교통 현장의 Android 앱을 개발하는 연제경의 포트폴리오입니다. Camera2, MediaCodec, BLE, MQTT, Kotlin, Java, Go 기반 프로젝트 경험을 소개합니다." />
+  <link rel="canonical" href="https://yeonchaking.github.io/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:title" content="연제경 | Android Developer" />
+  <meta property="og:description" content="공공·교통 현장의 Android 앱을 개발하는 연제경의 포트폴리오" />
+  <meta property="og:url" content="https://yeonchaking.github.io/" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="stylesheet" href="/assets/css/main.css" />
 </head>
 <body>
-
-<!-- Theme + tweaks controls -->
-<div class="controls">
-  <button class="iconbtn" id="themeBtn" aria-label="테마 전환" title="테마 전환">
-    <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
-    <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
-  </button>
-  <button class="iconbtn" id="twkBtn" aria-label="Tweaks" title="Tweaks">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
-  </button>
-</div>
-
-<div class="wrap layout">
-
-  <!-- ────────── HERO ────────── -->
-  <header class="hero">
-    <div>
-      <h1 class="h-name">
-        <span class="ko">연제경</span>
-        <span class="en">Yeon JeGyeong</span>
-      </h1>
-      <p class="h-role">Android Developer</p>
-
-      <nav class="nav" aria-label="섹션 내비게이션">
-        <ul>
-          <li><a href="#about" data-section="about"><span class="line"></span>About</a></li>
-          <li><a href="#experience" data-section="experience"><span class="line"></span>Experience</a></li>
-          <li><a href="#projects" data-section="projects"><span class="line"></span>Projects</a></li>
-          <li><a href="#skills" data-section="skills"><span class="line"></span>Skills</a></li>
-          <li><a href="#contact" data-section="contact"><span class="line"></span>Contact</a></li>
-        </ul>
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="site-brand" href="#top" aria-label="페이지 맨 위로">연제경</a>
+      <nav class="site-nav" aria-label="섹션 이동">
+        <a href="#experience">Experience</a>
+        <a href="#projects">Projects</a>
+        <a href="#skills">Skills</a>
       </nav>
-    </div>
-
-    <div class="socials" aria-label="소셜 링크">
-      <a href="mailto:yllh325@gmail.com" aria-label="Email">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-      </a>
-      <a href="https://github.com/yeonchaking" aria-label="GitHub" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.34-1.28-1.7-1.28-1.7-1.04-.72.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.46.11-3.04 0 0 .96-.31 3.16 1.18a11 11 0 0 1 5.76 0c2.2-1.49 3.16-1.18 3.16-1.18.62 1.58.23 2.75.11 3.04.74.81 1.18 1.84 1.18 3.1 0 4.43-2.7 5.4-5.27 5.69.41.36.78 1.05.78 2.12v3.14c0 .31.21.66.8.55C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
-      </a>
-      <a href="https://nockcha-log.tistory.com" aria-label="Blog" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V6a2 2 0 0 1 2-2h11l3 3v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>
-      </a>
     </div>
   </header>
 
-  <!-- ────────── MAIN ────────── -->
-  <main>
-
-    <!-- About -->
-    <section id="about" aria-labelledby="about-title">
-      <div class="s-head" aria-hidden="true">About</div>
-      <h2 class="s-title" id="about-title">About</h2>
-      <div class="lede reveal">
-        <p>
-          저는 <strong>Android 앱 개발자</strong>로서 기능 구현부터 아키텍처 설계까지 전반을 다루고 있습니다.
-          현재는 <strong>실시간 영상 처리</strong>와 <strong>하드웨어 연동(BLE · Camera2)</strong> 도메인에서 일하고 있으며,
-          단순히 동작하는 코드가 아니라 <em>오랫동안 유지보수할 수 있는 구조</em>를 만드는 데 관심이 많습니다.
-        </p>
-        <p>
-          최근에는 <strong>경찰청 BodyCam</strong> 앱에서 Camera2 기반 녹화 파이프라인과
-          BLE 기반 팀 동기화 기능을 설계 · 구현했습니다. 글로벌 기업용 통신 앱
-          <strong>Vodafone GC</strong>와 위치 추적 앱 <strong>MCLoc</strong>의 신규 기능 개발 및 유지보수에도 참여하고 있습니다.
+  <main id="top" class="page-shell">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero__intro">
+        <div class="hero__title-row">
+          <h1 id="hero-title">연제경</h1>
+          <p class="hero__role">Android Developer</p>
+        </div>
+        <p class="hero__summary">
+          공공·교통 분야 종사자의 현장 업무를 지원하는 회사에서 Kotlin과 Java 기반의 Android 애플리케이션을 개발·운영해 온 3년 차 개발자입니다.
+          주어진 요구사항을 구현하는 데 그치지 않고, 내가 직접 사용할 앱을 만든다는 마음으로 사용자의 불편까지 고민합니다.
         </p>
       </div>
+      <dl class="hero__contact" aria-label="연락처와 링크">
+        <div><dt>Mail</dt><dd><a href="mailto:yllh325@gmail.com">yllh325@gmail.com</a></dd></div>
+        <div><dt>GitHub</dt><dd><a href="https://github.com/yeonchaking" target="_blank" rel="noopener noreferrer">github.com/yeonchaking</a></dd></div>
+        <div><dt>Blog</dt><dd><a href="https://nockcha-log.tistory.com" target="_blank" rel="noopener noreferrer">nockcha-log.tistory.com</a></dd></div>
+      </dl>
     </section>
 
-    <!-- Experience -->
-    <section id="experience" aria-labelledby="experience-title">
-      <div class="s-head" aria-hidden="true">Experience</div>
-      <h2 class="s-title" id="experience-title">Experience</h2>
-      <div class="entries">
-
-        <article class="entry reveal">
-          <div class="e-period">2024.07 — 현재</div>
-          <div class="e-body">
-            <h3 class="e-title">
-              Android Developer
-              <span class="e-arrow" aria-hidden="true">↗</span>
-            </h3>
-            <p class="e-org">Cybertel <span class="sep">·</span> 정규직</p>
-            <p class="e-desc">
-              실시간 영상 녹화 · BLE 연동 · 글로벌 기업용 앱 등 B2G / B2B Android 프로덕트의
-              기능 개발과 아키텍처 개선을 담당.
-            </p>
-            <ul class="e-bullets">
-              <li>경찰청 BodyCam 앱 — Camera2 기반 녹화 파이프라인, H.264/H.265 인코딩, BLE TeamSync 설계·구현</li>
-              <li>Vodafone GC App — 신규 기능 개발 및 UI 동작 최적화 (글로벌 기업용 그룹 통신 앱)</li>
-              <li>MCLoc 앱 — 위치 추적 기능 개발 및 유지보수</li>
-            </ul>
-            <div class="tags">
-              <span class="tag">Kotlin</span>
-              <span class="tag">Camera2</span>
-              <span class="tag">BLE</span>
-              <span class="tag">MediaMuxer</span>
-              <span class="tag">Hilt</span>
-              <span class="tag">MVVM</span>
-            </div>
+    <section id="experience" class="section" aria-labelledby="experience-title">
+      <h2 id="experience-title" class="section-title">Experience</h2>
+      <div class="company-heading">
+        <div><h3>사이버텔브릿지(Cybertel Bridge)</h3><p>Android Developer</p></div>
+        <p class="period"><time datetime="2024-07">2024.07</time> - 현재</p>
+      </div>
+      <div class="experience-list">
+        <article class="experience-item">
+          <div class="item-heading">
+            <h4>경찰청 BodyCam <span class="project-note">주요 프로젝트</span></h4>
+            <p class="period"><time datetime="2025-07">2025.07</time> - <time datetime="2026-03">2026.03</time></p>
           </div>
+          <ul>
+            <li>Camera2, MediaCodec, MediaMuxer를 연결한 실시간 녹화 파이프라인을 설계·구현하고 H.265 하드웨어 인코딩 적용</li>
+            <li>BLE 기반 TeamSync 프로토콜을 구현해 여러 팀원의 녹화 시작·종료 명령 동기화</li>
+          </ul>
+          <p class="tech"><strong>Tech</strong> Kotlin, Camera2, MediaCodec, MediaMuxer, BLE, Hilt, MVVM</p>
         </article>
-
-      </div>
-    </section>
-
-    <!-- Projects -->
-    <section id="projects" aria-labelledby="projects-title">
-      <div class="s-head" aria-hidden="true">Projects</div>
-      <h2 class="s-title" id="projects-title">Projects</h2>
-      <div class="entries">
-
-        <article class="entry reveal">
-          <div class="e-period">2025.07 ~ 현재</div>
-          <div class="e-body">
-            <h3 class="e-title">BodyCam <span class="e-arrow" aria-hidden="true">↗</span></h3>
-            <p class="e-org">경찰청 바디캠 Android 앱</p>
-            <div class="psr">
-              <div class="psr-cell">
-                <span class="lbl">Problem</span>
-                <p>현장 영상의 끊김 없는 실시간 녹화와, 다수 팀원 간 녹화 시작/종료 동기화가 필요했음.</p>
-              </div>
-              <div class="psr-cell">
-                <span class="lbl">Solution</span>
-                <p>Camera2 + MediaMuxer 파이프라인 설계, H.264/H.265 하드웨어 인코딩, BLE 기반 TeamSync 프로토콜 구현.</p>
-              </div>
-              <div class="psr-cell">
-                <span class="lbl">Result</span>
-                <p>장시간 녹화 안정성 확보, 팀 단위 동시 녹화 시나리오를 운영 환경에 투입.</p>
-              </div>
-            </div>
-            <div class="tags">
-              <span class="tag">Camera2</span>
-              <span class="tag">H.264 / H.265</span>
-              <span class="tag">MediaMuxer</span>
-              <span class="tag">BLE</span>
-              <span class="tag">Kotlin</span>
-            </div>
-          </div>
+        <article class="experience-item">
+          <div class="item-heading"><h4>인천교통공사 지하철 역무지원 시스템</h4><p class="period"><time datetime="2026-04">2026.04</time> - 현재</p></div>
+          <ul>
+            <li>실시간 열차 운행정보 앱과 역무원 단말의 위치전송 앱 개발</li>
+            <li>위치 데이터와 단말별 설정 정보를 중계하는 Go 기반 위치수집 서버 개발</li>
+          </ul>
+          <p class="tech"><strong>Tech</strong> Kotlin, MVVM, Retrofit, Hilt, Go</p>
         </article>
-
-        <article class="entry reveal">
-          <div class="e-period">2024.08 ~ 2025.02</div>
-          <div class="e-body">
-            <h3 class="e-title">Vodafone GC App <span class="e-arrow" aria-hidden="true">↗</span></h3>
-            <p class="e-org">기업용 그룹 통신 앱 (글로벌)</p>
-            <div class="psr">
-              <div class="psr-cell">
-                <span class="lbl">Problem</span>
-                <p>다국가 사용자 환경에서의 신규 기능 요구와 화면 동작 최적화 이슈.</p>
-              </div>
-              <div class="psr-cell">
-                <span class="lbl">Solution</span>
-                <p>신규 기능 개발 및 UI 인터랙션 · 렌더링 최적화. <em>(기능 상세는 NDA 제약으로 생략)</em></p>
-              </div>
-              <div class="psr-cell">
-                <span class="lbl">Result</span>
-                <p>주요 화면 응답성 개선, 기존 코드베이스를 깨지 않는 점진적 리팩터링.</p>
-              </div>
-            </div>
-            <div class="tags">
-              <span class="tag">Kotlin</span>
-              <span class="tag">MVVM</span>
-              <span class="tag">Retrofit</span>
-              <span class="tag">Jetpack</span>
-            </div>
-          </div>
+        <article class="experience-item">
+          <div class="item-heading"><h4>MCLoc 기반 GIS 모듈</h4><p class="period"><time datetime="2024-12">2024.12</time> - <time datetime="2025-07">2025.07</time></p></div>
+          <p>기존 MCPPT 앱에 MQTT 통신 기반 GIS MapView를 추가하고 단말 UI 최적화</p>
+          <p class="tech"><strong>Tech</strong> Java, MQTT</p>
         </article>
-
-        <article class="entry reveal">
-          <div class="e-period">2024.12 ~ 2025.06</div>
-          <div class="e-body">
-            <h3 class="e-title">MCLoc <span class="e-arrow" aria-hidden="true">↗</span></h3>
-            <p class="e-org">위치 추적 Android 앱</p>
-            <div class="psr">
-              <div class="psr-cell">
-                <span class="lbl">Problem</span>
-                <p>운영 중인 앱의 기능 확장과 장기 유지보수성 확보.</p>
-              </div>
-              <div class="psr-cell">
-                <span class="lbl">Solution</span>
-                <p>기능 단위 모듈화, 백그라운드 위치 갱신 안정성 개선, 결함 대응.</p>
-              </div>
-              <div class="psr-cell">
-                <span class="lbl">Result</span>
-                <p>이슈 대응 사이클 단축, 신규 기능을 안전하게 얹을 수 있는 구조로 정리.</p>
-              </div>
-            </div>
-            <div class="tags">
-              <span class="tag">Kotlin</span>
-              <span class="tag">Room</span>
-              <span class="tag">Hilt</span>
-              <span class="tag">Clean Architecture</span>
-            </div>
-          </div>
+        <article class="experience-item">
+          <div class="item-heading"><h4>Vodafone 대상 MCPPT 솔루션</h4><p class="period"><time datetime="2024-08">2024.08</time> - <time datetime="2025-03">2025.03</time></p></div>
+          <p>신규 폼팩터 단말 3종의 Key Intent와 UI를 대응하고 PTT 통신·미디어 코덱 관련 이슈 유지보수</p>
+          <p class="tech"><strong>Tech</strong> Java</p>
         </article>
-
       </div>
     </section>
 
-    <!-- Skills -->
-    <section id="skills" aria-labelledby="skills-title">
-      <div class="s-head" aria-hidden="true">Skills</div>
-      <h2 class="s-title" id="skills-title">Skills</h2>
-      <div class="skills reveal">
-        <div class="skill-cat">
-          <span class="cat-lbl">Language</span>
-          <div class="skill-list">
-            <span class="tag">Kotlin</span>
-            <span class="tag">Java</span>
-          </div>
+    <section id="projects" class="section" aria-labelledby="projects-title">
+      <h2 id="projects-title" class="section-title">Projects</h2>
+      <article class="project">
+        <div class="project-heading">
+          <div><p class="project-org">Cybertel Bridge</p><h3>경찰청 BodyCam</h3><p class="project-summary">전국 경찰 현장에 보급된 바디캠 단말의 녹화 기능을 담당하는 Android 앱</p></div>
+          <p class="period"><time datetime="2025-07">2025.07</time> - <time datetime="2026-03">2026.03</time></p>
         </div>
-        <div class="skill-cat">
-          <span class="cat-lbl">Android</span>
-          <div class="skill-list">
-            <span class="tag">Jetpack</span>
-            <span class="tag">Hilt</span>
-            <span class="tag">Camera2</span>
-            <span class="tag">BLE</span>
-            <span class="tag">MediaMuxer</span>
-          </div>
+        <div class="project-detail">
+          <h4>실시간 녹화 파이프라인</h4>
+          <ul>
+            <li>Camera2의 영상 입력을 MediaCodec의 Surface로 전달하고 MediaMuxer를 통해 MP4 파일로 저장하는 녹화 파이프라인 구현</li>
+            <li>H.265 하드웨어 인코딩을 적용하고 녹화 상태 변화에 맞춰 Camera, Codec, Muxer 리소스의 생성과 해제 흐름 관리</li>
+          </ul>
         </div>
-        <div class="skill-cat">
-          <span class="cat-lbl">Architecture</span>
-          <div class="skill-list">
-            <span class="tag">MVVM</span>
-            <span class="tag">Clean Architecture</span>
-          </div>
+        <div class="project-detail">
+          <h4>BLE TeamSync</h4>
+          <ul><li>대표 단말의 녹화 시작·종료 명령을 여러 팀 단말에 전달하고 각 단말의 연결과 녹화 상태를 동기화</li></ul>
         </div>
-        <div class="skill-cat">
-          <span class="cat-lbl">Data / Network</span>
-          <div class="skill-list">
-            <span class="tag">Room</span>
-            <span class="tag">SharedPreferences</span>
-            <span class="tag">Retrofit</span>
-            <span class="tag">JSON</span>
-          </div>
+        <div class="project-detail">
+          <h4>프리레코딩 및 현장 이슈 대응</h4>
+          <ul>
+            <li>촬영 시작 직전 30초 영상을 보존하는 프리레코딩 기능 개발</li>
+            <li>상시 프리레코딩에서 확인된 배터리 소모와 발열에 대응해 자원 사용과 녹화 상태 정리 흐름 점검</li>
+          </ul>
         </div>
-        <div class="skill-cat" style="grid-column: 1 / -1;">
-          <span class="cat-lbl">Tools · Education</span>
-          <div class="skill-list">
-            <span class="tag">Git</span>
-            <span class="tag">Figma</span>
-            <span class="tag">SSAFY 9기</span>
-            <span class="tag">정보처리기사</span>
-            <span class="tag">SQLD</span>
-          </div>
-        </div>
-      </div>
+        <p class="tech"><strong>Tech</strong> Kotlin, Camera2, MediaCodec, MediaMuxer, BLE, Hilt, MVVM</p>
+        <p class="references"><strong>관련 자료</strong><a href="https://www.police.go.kr/user/bbs/BD_selectBbs.do?q_bbsCode=1002&amp;q_bbscttSn=20250723140453472" target="_blank" rel="noopener noreferrer">경찰청 도입 보도자료</a><a href="https://www.fnnews.com/news/202512171609568839" target="_blank" rel="noopener noreferrer">도입 후 현장 평가</a></p>
+      </article>
 
-      <div class="edu reveal" style="margin-top: 28px;">
-        <div class="edu-item">
-          <span class="name">전북대학교 — 졸업</span>
-          <span class="meta">2014 — 2020</span>
+      <article class="project">
+        <div class="project-heading">
+          <div><p class="project-org">Cybertel Bridge</p><h3>인천교통공사 지하철 역무지원 시스템</h3><p class="project-summary">열차 운행정보 확인과 역무원 위치 수집·전송을 지원하는 Android 앱 2종 및 Go 기반 중계 서버</p></div>
+          <p class="period"><time datetime="2026-04">2026.04</time> - 현재</p>
         </div>
-        <div class="edu-item">
-          <span class="name">SSAFY 9기 (삼성청년SW아카데미)</span>
-          <span class="meta">2023.01 — 2023.12</span>
+        <div class="project-detail"><h4>열차운행정보 앱</h4><ul><li>주기적 폴링으로 소속 노선의 열차 운행정보를 조회하고 고장·특이사항 알림을 수신하는 앱 개발</li></ul></div>
+        <div class="project-detail">
+          <h4>위치전송 앱</h4>
+          <ul>
+            <li>역무원 단말의 위치 데이터를 수집해 위치수집 서버로 전송하는 Android 앱 개발</li>
+            <li>GPS 위치를 기본으로 사용하고 위치를 획득하지 못하거나 정확도가 기준에 미치지 못하면 Network Provider 위치로 대체</li>
+            <li>이벤트 로그 목록에 Paging 3를 적용해 전체 로그를 한 번에 메모리에 적재하지 않도록 구성</li>
+          </ul>
         </div>
-      </div>
+        <div class="project-detail">
+          <h4>위치수집 서버</h4>
+          <ul>
+            <li>위치 데이터와 지령 서버의 단말별 설정 정보를 중계하는 Go 서버 개발</li>
+            <li>요구사항, API 인터페이스, DB 구조, 기능 흐름을 직접 정의·문서화</li>
+            <li>원격 설치 환경의 메모리 제약을 고려해 저장소를 MySQL로 전환하고 서버 구성을 경량화</li>
+          </ul>
+        </div>
+        <p class="tech"><strong>Tech</strong> Kotlin, MVVM, Retrofit, Hilt, Paging 3, Go, MySQL</p>
+      </article>
+
+      <article class="project project--compact">
+        <div class="project-heading"><div><h3>MCLoc 기반 GIS 모듈</h3></div><p class="period"><time datetime="2024-12">2024.12</time> - <time datetime="2025-07">2025.07</time></p></div>
+        <ul>
+          <li>현장에서 그룹 멤버의 위치를 지도에서 확인할 수 있도록 기존 MCPPT 앱에 GIS MapView 기능 추가</li>
+          <li>Call·Geofencing 이벤트를 별도 폴링 없이 반영하기 위해 MQTT Pub/Sub 통신 적용</li>
+          <li>위치·이벤트 데이터를 화면 상태로 변환해 지도 마커와 그룹 멤버 상태 갱신</li>
+        </ul>
+        <p class="tech"><strong>Tech</strong> Java, MQTT</p>
+      </article>
+
+      <article class="project project--compact">
+        <div class="project-heading"><div><h3>Vodafone 대상 MCPPT 솔루션</h3></div><p class="period"><time datetime="2024-08">2024.08</time> - <time datetime="2025-03">2025.03</time></p></div>
+        <ul>
+          <li>화면 비율과 물리키 구성이 다른 신규 폼팩터 단말 3종에서 동일한 PTT 사용 흐름 제공</li>
+          <li>단말별 Key Intent를 PTT 동작과 연결하고 화면 비율에 맞게 UI 조정</li>
+          <li>PTT 통신과 미디어 코덱 관련 이슈를 유지보수하며 공통 기능과 단말별 차이를 분리</li>
+        </ul>
+        <p class="tech"><strong>Tech</strong> Java</p>
+      </article>
+
+      <h3 class="project-group-title">개인 프로젝트</h3>
+      <article class="project project--personal">
+        <div class="project-heading">
+          <div><h3>오늘도출근</h3><p class="project-summary">실시간 버스 도착정보와 알람을 결합한 출근 지원 Android 앱</p></div>
+          <p class="period"><time datetime="2026-06">2026.06</time> - <time datetime="2026-08">2026.08</time></p>
+        </div>
+        <ul>
+          <li>버스 도착 시간이 일정하지 않아 생기는 불편을 해결하고자 직접 사용할 앱을 기획·개발</li>
+          <li>알람 실행, 실시간 도착정보 확인, TTS 안내, 출근 미션 완료, 성공 기록 저장을 하나의 흐름으로 연결</li>
+          <li>Google Play 프로덕션으로 출시하고 실제 사용 과정에서 발견한 오류와 사용 흐름 개선</li>
+        </ul>
+        <p class="tech"><strong>Tech</strong> Kotlin, Jetpack Compose, Retrofit, Room, Hilt</p>
+      </article>
     </section>
 
-    <!-- Contact -->
-    <section id="contact" aria-labelledby="contact-title">
-      <div class="s-head" aria-hidden="true">Contact</div>
-      <h2 class="s-title" id="contact-title">Contact</h2>
-      <div class="contact-card reveal">
-        <div>
-          <span class="big"><a href="mailto:yllh325@gmail.com">yllh325@gmail.com</a></span>
-          <p style="margin-top: 6px; font-size: 13.5px;">
-            GitHub <a href="https://github.com/yeonchaking" target="_blank" rel="noopener" style="color:var(--text-strong);">@yeonchaking</a>
-            <span style="color:var(--text-dim);"> · </span>
-            Blog <a href="https://nockcha-log.tistory.com" target="_blank" rel="noopener" style="color:var(--text-strong);">nockcha-log</a>
-          </p>
-        </div>
-        <a class="btn" href="mailto:yllh325@gmail.com">
-          메일 보내기
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-        </a>
-      </div>
-
-      <footer>
-        <p>
-          Designed &amp; built by 연제경 ·
-          Pretendard / JetBrains Mono ·
-          <a href="https://github.com/yeonchaking" target="_blank" rel="noopener">source on GitHub</a>
-        </p>
-      </footer>
+    <section id="skills" class="section" aria-labelledby="skills-title">
+      <h2 id="skills-title" class="section-title">Core Skills</h2>
+      <dl class="skill-list">
+        <div><dt>Language</dt><dd>Kotlin · Java · Go</dd></div>
+        <div><dt>Android</dt><dd>Jetpack · Jetpack Compose · Camera2 · MediaCodec · MediaMuxer · BLE</dd></div>
+        <div><dt>Architecture &amp; Data</dt><dd>MVVM · Hilt · Coroutines/Flow · Room · Retrofit · Paging 3</dd></div>
+        <div><dt>Integration &amp; Backend</dt><dd>MQTT · Go · MySQL</dd></div>
+        <div><dt>Tools &amp; AI</dt><dd>Git · Figma · Claude Code · ChatGPT Agent</dd></div>
+      </dl>
     </section>
 
+    <section class="section" aria-labelledby="education-title">
+      <h2 id="education-title" class="section-title">Education &amp; Credentials</h2>
+      <div class="credential-list">
+        <div><strong>전북대학교 수학과</strong><span>학사 졸업 2023.02</span></div>
+        <div><strong>삼성청년소프트웨어아카데미 SSAFY 9기</strong><span>2023.01 - 2023.12</span></div>
+        <div><strong>정보처리기사</strong><span>2024.06</span></div>
+        <div><strong>SQLD (SQL 개발자)</strong><span>2023.07</span></div>
+      </div>
+    </section>
   </main>
-</div>
 
-<!-- ────────── TWEAKS PANEL ────────── -->
-<aside class="twk" id="twk" aria-label="Tweaks">
-  <div class="twk-hd"><b>Tweaks</b><button class="twk-x" id="twkClose" aria-label="닫기">×</button></div>
-  <div class="twk-body">
-    <div class="twk-row">
-      <span class="twk-lbl">Accent</span>
-      <div class="twk-swatches" id="accentSwatches" role="radiogroup" aria-label="Accent color">
-        <button class="twk-sw" data-accent="teal"   role="radio" aria-checked="true"  style="background:#5eead4" title="teal"></button>
-        <button class="twk-sw" data-accent="blue"   role="radio" aria-checked="false" style="background:#93c5fd" title="blue"></button>
-        <button class="twk-sw" data-accent="amber"  role="radio" aria-checked="false" style="background:#fbbf24" title="amber"></button>
-        <button class="twk-sw" data-accent="violet" role="radio" aria-checked="false" style="background:#c4b5fd" title="violet"></button>
-      </div>
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <p>연제경 · Android Developer</p>
+      <p><a href="mailto:yllh325@gmail.com">Email</a><a href="https://github.com/yeonchaking" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://nockcha-log.tistory.com" target="_blank" rel="noopener noreferrer">Blog</a></p>
     </div>
-    <div class="twk-row">
-      <span class="twk-lbl">Theme</span>
-      <div class="twk-seg" id="themeSeg" role="tablist">
-        <button data-theme="dark"  aria-pressed="true">Dark</button>
-        <button data-theme="light" aria-pressed="false">Light</button>
-      </div>
-    </div>
-  </div>
-</aside>
-
-<script>
-(() => {
-  const html = document.documentElement;
-
-  // ── Theme persistence ─────────────────────────────
-  const saved = localStorage.getItem('yjk.theme');
-  const savedAccent = localStorage.getItem('yjk.accent');
-  if (saved === 'light' || saved === 'dark') html.setAttribute('data-theme', saved);
-  if (savedAccent) html.setAttribute('data-accent', savedAccent);
-
-  function setTheme(t) {
-    html.setAttribute('data-theme', t);
-    localStorage.setItem('yjk.theme', t);
-    document.querySelectorAll('#themeSeg button').forEach(b => {
-      b.setAttribute('aria-pressed', b.dataset.theme === t ? 'true' : 'false');
-    });
-  }
-  function setAccent(a) {
-    html.setAttribute('data-accent', a);
-    localStorage.setItem('yjk.accent', a);
-    document.querySelectorAll('#accentSwatches .twk-sw').forEach(b => {
-      b.setAttribute('aria-checked', b.dataset.accent === a ? 'true' : 'false');
-    });
-  }
-  // sync UI with current values
-  setTheme(html.getAttribute('data-theme'));
-  setAccent(html.getAttribute('data-accent'));
-
-  document.getElementById('themeBtn').addEventListener('click', () => {
-    setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-  });
-  document.getElementById('themeSeg').addEventListener('click', (e) => {
-    const btn = e.target.closest('button[data-theme]');
-    if (btn) setTheme(btn.dataset.theme);
-  });
-  document.getElementById('accentSwatches').addEventListener('click', (e) => {
-    const btn = e.target.closest('button[data-accent]');
-    if (btn) setAccent(btn.dataset.accent);
-  });
-
-  // ── Tweaks panel open/close ───────────────────────
-  const twk = document.getElementById('twk');
-  document.getElementById('twkBtn').addEventListener('click', () => {
-    twk.setAttribute('data-open', twk.getAttribute('data-open') === 'true' ? 'false' : 'true');
-  });
-  document.getElementById('twkClose').addEventListener('click', () => {
-    twk.setAttribute('data-open', 'false');
-  });
-
-  // ── Pointer-following accent glow ─────────────────
-  let raf = 0;
-  window.addEventListener('pointermove', (e) => {
-    if (raf) return;
-    raf = requestAnimationFrame(() => {
-      document.body.style.setProperty('--mx', e.clientX + 'px');
-      document.body.style.setProperty('--my', e.clientY + 'px');
-      raf = 0;
-    });
-  }, { passive: true });
-
-  // ── Scrollspy for left nav ───────────────────────
-  const navLinks = document.querySelectorAll('.nav a[data-section]');
-  const map = new Map();
-  navLinks.forEach(a => map.set(a.dataset.section, a));
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(en => {
-      if (en.isIntersecting) {
-        const id = en.target.id;
-        navLinks.forEach(a => a.classList.toggle('is-active', a.dataset.section === id));
-      }
-    });
-  }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
-  document.querySelectorAll('section[id]').forEach(s => io.observe(s));
-
-  // ── Reveal-on-scroll ─────────────────────────────
-  const ro = new IntersectionObserver((entries) => {
-    entries.forEach(en => {
-      if (en.isIntersecting) {
-        en.target.classList.add('is-in');
-        ro.unobserve(en.target);
-      }
-    });
-  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-  document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
-})();
-</script>
-
+  </footer>
 </body>
 </html>
