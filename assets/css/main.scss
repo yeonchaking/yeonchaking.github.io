@@ -284,15 +284,14 @@ a:focus-visible {
   font-size: 12px;
   font-weight: 550;
   white-space: nowrap;
+  text-decoration-thickness: 1px;
 }
 
-.project-link {
-  margin-left: 7px;
-  color: var(--accent);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0;
-  white-space: nowrap;
+a.project-note { text-decoration: none; }
+
+a.project-note:hover {
+  color: var(--accent-dark);
+  text-decoration: underline;
 }
 
 ul { padding-left: 1.2em; }
